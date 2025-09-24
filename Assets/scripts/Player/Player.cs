@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     public float MoveSpeed = 5.0f;
@@ -20,6 +21,9 @@ public class Player : MonoBehaviour
     private bool isGrounded = false;
     private bool wantsToJump = false;
     public float rayLength = 0.2f;
+    public bool useRaycast = true;
+
+
 
 
     void Start()
@@ -94,16 +98,37 @@ public class Player : MonoBehaviour
     {
         if (footPoint != null)
         {
-            Collider2D hit = Physics2D.OverlapCircle((Vector2)footPoint.position, groundCheckRadius, groundMask); //footpointposition 에서부터 groundCheckRadius의 반경의 원(OverlapCircle)에 groundMask에 해당하는 Layer의 오브젝트가 들어가있는지 체크해 정보가 있으면 hit변수에 들어가게됨
-
-            if (hit != null)
+            if (useRaycast == true)
             {
-                isGrounded = true;
+                RaycastHit2D hit = Physics2D.Raycast((Vector2)footPoint.position, Vector2.down, 0.2f, groundMask);
+
+                if (hit.collider != null)
+                {
+                    isGrounded = true;
+
+                }
+                else 
+                { 
+                isGrounded = false;
+                }
             }
+
+
+
             else
             {
-                isGrounded = false;
+                Collider2D hit = Physics2D.OverlapCircle((Vector2)footPoint.position, groundCheckRadius, groundMask); //footpointposition 에서부터 groundCheckRadius의 반경의 원(OverlapCircle)에 groundMask에 해당하는 Layer의 오브젝트가 들어가있는지 체크해 정보가 있으면 hit변수에 들어가게됨
+
+                if (hit != null)
+                {
+                    isGrounded = true;
+                }
+                else
+                {
+                    isGrounded = false;
+                }
             }
+                   
         }
 
 
