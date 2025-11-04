@@ -29,7 +29,7 @@ public class PlayerRespawn : MonoBehaviour
     }
 
 
-
+    
     public void Respawn()
     {
         if (hasSpawnPosition == true)

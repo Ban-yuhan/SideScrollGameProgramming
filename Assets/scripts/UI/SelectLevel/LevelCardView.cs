@@ -1,0 +1,104 @@
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
+
+
+public class LevelCardView : MonoBehaviour
+{
+    [SerializeField] private TMP_Text titleText;
+    [SerializeField] private TMP_Text bestTimeText;
+    [SerializeField] private Image previewImage;
+    [SerializeField] private Button playButton;
+    [SerializeField] private StarIconsView starIcons;
+
+    //===================변수추가=======================
+    [SerializeField] private LevelCardLockView lockView;
+   
+    //==================================================
+
+    private LevelMeta currentMeta;
+
+    //public void SetData(LevelMeta meta) 함수 형태 수정
+    public void SetData(LevelMeta meta, UnlockDatabase unlockDb, string[] allLevelIds)
+    {
+        currentMeta = meta;
+
+        if (titleText != null)
+        {
+            titleText.text = meta.displayName;
+        }
+
+        if (previewImage != null)
+        {
+            if (meta.preview != null)
+            {
+                previewImage.sprite = meta.preview;
+            }
+        }
+
+        float bestSec = LevelSaveSystemPlus.GetBestTime(meta.levelId);
+        int bestStars = LevelSaveSystemPlus.GetBestStars(meta.levelId);
+
+        if (bestTimeText != null)
+        {
+            bestTimeText.text = "Best: " + LevelSaveSystemPlus.FormatTime(bestSec);
+        }
+
+        if (starIcons != null)
+        {
+            int shown = (bestStars >= 0) ? bestStars : 0;
+            starIcons.SetStars(shown);
+        }
+
+        //===========================================내용 추가==============================================
+
+        int totalStars = ProgressReadOnly.GetTotalBestStars(allLevelIds);
+        int required = 0;
+        bool unlocked = true;
+
+        if (unlockDb != null)
+        {
+            LevelUnlockRule rule = unlockDb.FindRule(meta.levelId);
+
+            if (rule != null)
+            {
+                required = rule.requiredTotalStars;
+                unlocked = (totalStars >= required);
+            }
+        }
+
+        if (lockView != null)
+        {
+            lockView.Apply((unlocked == false), required, totalStars);
+        }
+
+        //=================================================================================================
+
+        if (playButton != null)
+        {
+            playButton.onClick.RemoveAllListeners();
+            playButton.onClick.AddListener(OnClickedPlay);
+        }
+    }
+
+    private void OnClickedPlay()
+    {
+        if (currentMeta == null)
+        {
+            return;
+        }
+
+        SceneTransitionController trans = FindAnyObjectByType<SceneTransitionController>();
+        if (trans != null)
+        {
+            trans.LoadSceneByName(currentMeta.sceneName);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(currentMeta.sceneName) == false)
+        {
+            SceneManager.LoadScene(currentMeta.sceneName);
+        }
+    }
+}

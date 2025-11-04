@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class Player : MonoBehaviour
 {
+
     public float MoveSpeed = 5.0f;
 
     public float JumpPower = 5.0f;
@@ -49,47 +51,36 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-        PlayerMove();
-
+        
+        
+            PlayerMove();
+        
+        
     }
 
-
-
-    void PlayerMove()
+        void PlayerMove()
     {
+        
         moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2((MoveSpeed * moveInput), rb.linearVelocity.y);
 
     }
 
-    /*
-    void PlayerMove2()
-    {
-        float X = Input.GetAxisRaw("Horizontal");
-        float Y = Input.GetAxisRaw("Vertical");
-
-        Vector3 position = new Vector3(X, Y, 0);
-
-        gameObject.transform.position = gameObject.transform.position + (position * MoveSpeed * Time.deltaTime);
-    }
-    */
-
-
     void PlayerHead()
     {
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (sr != null)
         {
+            if (moveInput < 0.0f)
+            {
 
-            sr.flipX = true;
+                sr.flipX = true;
+            }
+
+            else if (moveInput > 0.0f)
+            {
+                sr.flipX = false;
+            }
         }
-
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            sr.flipX = false;
-        }
-
     }
 
 
