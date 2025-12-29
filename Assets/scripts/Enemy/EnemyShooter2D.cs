@@ -23,10 +23,12 @@ public class EnemyShooter2D : MonoBehaviour
     
     private float cooldownTimer = 0.0f;
 
+    
 
     
     void Update()
     {
+    
         if (cooldownTimer > 0.0f)
         { 
             cooldownTimer -= Time.deltaTime;

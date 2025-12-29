@@ -37,6 +37,8 @@ public class EnemyAnimator : MonoBehaviour
 
 
 
+    private PlayerHealth playerHealth;
+    
 
     [SerializeField] private string paramCanSeePlayer = "CanSeePlayer";
 
@@ -76,7 +78,7 @@ public class EnemyAnimator : MonoBehaviour
         if (player == null)
             { 
 
-            GameObject objectPlayer = GameObject.Find("Player");
+            GameObject objectPlayer = GameObject.FindGameObjectWithTag("Player");
 
             if (objectPlayer != null)
             {
@@ -88,11 +90,25 @@ public class EnemyAnimator : MonoBehaviour
         { 
         canSeePlayer = false;
         }
-    }
 
+        //GameObject Player = GameObject.FindGameObjectWithTag("Player");
+        //if (Player != null)
+        //{
+        //    playerHealth = player.GetComponent<PlayerHealth>();
+        //}
+    }
+    private void Start()
+    {
+        if (player != null)
+        {
+            playerHealth = player.GetComponent<PlayerHealth>();
+
+        }
+    }
     private void Update()
     {
         CanSeePlayer();
+        Debug.Log("csp :" + canSeePlayer);
 
         Vector2 v = rb != null ? rb.linearVelocity : Vector2.zero;
 
@@ -126,6 +142,8 @@ public class EnemyAnimator : MonoBehaviour
             return;
         }
 
+        bool isAlive = playerHealth.isAlive();
+
         Vector2 origin = sensorPoint.position;
         Vector2 toPlayer = (Vector2)(player.position - sensorPoint.position);
         float distance = toPlayer.magnitude; // 벡터의 크기(=거리) 계산 
@@ -156,8 +174,13 @@ public class EnemyAnimator : MonoBehaviour
             return;
         }
 
-        canSeePlayer = true;
+        if (isAlive == false)
+        {
+            canSeePlayer = false;
+            return;
+        }
 
+        canSeePlayer = true;
 
     }
 

@@ -44,8 +44,15 @@ public class PlayerJumpAttack : MonoBehaviour
             return;
         }
 
+        EnemyState state = hit.collider.GetComponent<EnemyState>();
+        if (state != null)
+        {
+            state.PlayHitAnimation();
+            state.SetAlive(false);
+        }
+                
         //밟힌 적을 파괴
-        Destroy(hit.collider.gameObject);
+        Destroy(hit.collider.gameObject, 1.0f); //밟힌 적을 파괴. 지정되 시간이 지난 이후에
 
         //플레이어의 현재 속도를 가져와서 저장한다.
         Vector2 v = rb.linearVelocity;

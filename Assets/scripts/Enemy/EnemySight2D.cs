@@ -8,11 +8,9 @@ public class EnemySight2D : MonoBehaviour
     public float detectRadius = 6.0f; //감지 범위
     public float fovAngle = 90.0f; //시야각도
 
-    PlayerHealth playerHealth;
-    private void Awake()
-    {
-        playerHealth = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
-    }
+    private PlayerHealth playerHealth;
+
+    
 
     void Start()
     {
@@ -29,8 +27,10 @@ public class EnemySight2D : MonoBehaviour
         if (objectPlayer != null) // 오브젝트를 찾고나서 null인지 아닌지 체크해주는게 좋음
         {
             player = objectPlayer.transform;
+            playerHealth = player.GetComponent<PlayerHealth>();
+
         }
-        
+
         /*
         Player playerMove = GameObject.FindAnyObjectByType<Player>();
         if (playerMove != null)
@@ -40,12 +40,15 @@ public class EnemySight2D : MonoBehaviour
         */
     }
 
+    
     public bool CanSeePlayer()
     {
         if (player == null || sensorPoint == null)
         { 
             return false;
         }
+
+        bool isAlive = playerHealth.isAlive();
         
         Vector2 origin = sensorPoint.position;
         Vector2 toPlayer = (Vector2)(player.position - sensorPoint.position); //position이 Vector3 형이기 때문에 Vector2 형으로 바꿔줘야함 → 형 변환 || 상호간에 변환이 가능한 형 끼리만 변환 가능. ex) int, float 형을 Vector2 형, Vector3 형 으로 변환할 수 없음.
@@ -68,6 +71,11 @@ public class EnemySight2D : MonoBehaviour
         RaycastHit2D block = Physics2D.Raycast(origin, toPlayer.normalized, distance, groundMask); 
         bool blocked = (block.collider != null);
         if (blocked == true)
+        {
+            return false;
+        }
+
+        if (isAlive == false)
         {
             return false;
         }

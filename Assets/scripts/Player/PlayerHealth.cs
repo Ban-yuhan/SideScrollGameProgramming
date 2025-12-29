@@ -40,13 +40,22 @@ public class PlayerHealth : MonoBehaviour
 
     IEnumerator Respawn()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
 
         if (respawn != null)
         {
             respawn.Respawn();
             InitHP();
         }
+    }
+
+    public bool isAlive()
+    {
+        if( currentHP == 0)
+        {
+            return false;
+        }
+        return true;
     }
   
 }

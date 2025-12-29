@@ -18,6 +18,9 @@ public class EnemyPatrol2D : MonoBehaviour
     private int direction = 1; //바뀌는 방향은 여기에 입력.
 
 
+    public EnemyState state;
+
+
     private void Awake()
     {
         direction = startdirectioni >= 0 ? 1 : -1; // 3항 연산 → startdirection이 0보다 크거나 같은지 비교, 같으면 1, 같지 않으면 -1을 집어넣음 
@@ -44,6 +47,12 @@ public class EnemyPatrol2D : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (state != null && state.GetAlive() == false)
+        { 
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
+
         Vector2 v = body.linearVelocity;
         v.x = direction * moveSpeed;
         body.linearVelocity = v;
